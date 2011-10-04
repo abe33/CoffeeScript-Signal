@@ -18,6 +18,9 @@ class Signal
 		if @registered listener, scope
 			@listeners.splice @indexOf( listener, scope ), 1
 	
+	removeAll:->
+		@listeners = []
+	
 	dispatch:->
 		listeners = @listeners.concat()
 		for [ listener, scope, once, priority ] in listeners

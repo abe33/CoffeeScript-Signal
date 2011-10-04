@@ -4,7 +4,7 @@ test "Signal has listeners", ->
 	signal = new Signal
 	listener = ->
 	
-	signal.add( listener )
+	signal.add listener 
 
 	assertThat signal, hasProperty "listeners", arrayWithLength 1
 
@@ -125,3 +125,14 @@ test "Listeners can have a priority, even when called once", ->
 
 	assertThat listenersCalls, array "listener2", "listener1"
 
+test "Signals can removes all its listeners at once", ->
+	signal = new Signal
+
+	listener1 = ->
+	listener2 = ->
+
+	signal.add listener1
+	signal.add listener2
+
+	signal.removeAll()
+	assertThat signal.listeners, arrayWithLength 0
