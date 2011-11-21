@@ -42,17 +42,6 @@
     Signal.prototype.removeAll = function() {
       return this.listeners = [];
     };
-    Signal.prototype.dispatch = function() {
-      var listener, listeners, once, priority, scope, _i, _len, _ref, _results;
-      listeners = this.listeners.concat();
-      _results = [];
-      for (_i = 0, _len = listeners.length; _i < _len; _i++) {
-        _ref = listeners[_i], listener = _ref[0], scope = _ref[1], once = _ref[2], priority = _ref[3];
-        listener.apply(scope, arguments);
-        _results.push(once ? this.remove(listener, scope) : void 0);
-      }
-      return _results;
-    };
     Signal.prototype.indexOf = function(listener, scope) {
       var index, _len, _listener, _ref, _ref2, _scope;
       _ref = this.listeners;
@@ -79,6 +68,17 @@
           return 0;
         }
       });
+    };
+    Signal.prototype.dispatch = function() {
+      var listener, listeners, once, priority, scope, _i, _len, _ref, _results;
+      listeners = this.listeners.concat();
+      _results = [];
+      for (_i = 0, _len = listeners.length; _i < _len; _i++) {
+        _ref = listeners[_i], listener = _ref[0], scope = _ref[1], once = _ref[2], priority = _ref[3];
+        listener.apply(scope, arguments);
+        _results.push(once ? this.remove(listener, scope) : void 0);
+      }
+      return _results;
     };
     return Signal;
   })();
@@ -113,6 +113,9 @@
         return this.stop();
       }
     };
+    Impulse.prototype.hasListeners = function() {
+      return this.listeners.length > 0;
+    };
     Impulse.prototype.start = function() {
       this.running = true;
       return this.initRun();
@@ -126,12 +129,6 @@
         return this.run();
       }, this));
     };
-    Impulse.prototype.hasListeners = function() {
-      return this.listeners.length > 0;
-    };
-    Impulse.prototype.getTime = function() {
-      return (new Date).getTime();
-    };
     Impulse.prototype.run = function() {
       var s, t;
       if (this.running) {
@@ -141,7 +138,12 @@
         return this.initRun();
       }
     };
+    Impulse.prototype.getTime = function() {
+      return (new Date).getTime();
+    };
     return Impulse;
   })();
-  window.Impulse = Impulse;
+  if (typeof window !== "undefined" && window !== null) {
+    window.Impulse = Impulse;
+  }
 }).call(this);
