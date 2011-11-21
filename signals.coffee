@@ -41,5 +41,4 @@ class Signal
 
 			if pA < pB then 1 else if pB < pA then -1 else 0
 
-if window?
-	window.Signal = Signal
+if window? then window.Signal = Signal

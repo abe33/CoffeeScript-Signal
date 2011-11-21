@@ -43,7 +43,7 @@ class Impulse extends Signal
 			t = @getTime()
 			s = ( t - @time ) * @timeScale
 
-			@dispatch(s,s/1000,t)
+			@dispatch s, s / 1000, t 
 			@initRun()
 
-window.Impulse = Impulse
+if window? then window.Impulse = Impulse
