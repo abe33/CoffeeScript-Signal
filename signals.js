@@ -12,49 +12,49 @@
     function Signal() {
       this.listeners = [];
     }
-    Signal.prototype.add = function(listener, scope, priority) {
+    Signal.prototype.add = function(listener, context, priority) {
       if (priority == null) {
         priority = 0;
       }
-      if (!this.registered(listener, scope)) {
-        this.listeners.push([listener, scope, false, priority]);
+      if (!this.registered(listener, context)) {
+        this.listeners.push([listener, context, false, priority]);
         if (this.listeners.length > 1) {
           return this.sortListeners();
         }
       }
     };
-    Signal.prototype.addOnce = function(listener, scope, priority) {
+    Signal.prototype.addOnce = function(listener, context, priority) {
       if (priority == null) {
         priority = 0;
       }
-      if (!this.registered(listener, scope)) {
-        this.listeners.push([listener, scope, true, priority]);
+      if (!this.registered(listener, context)) {
+        this.listeners.push([listener, context, true, priority]);
         if (this.listeners.length > 1) {
           return this.sortListeners();
         }
       }
     };
-    Signal.prototype.remove = function(listener, scope) {
-      if (this.registered(listener, scope)) {
-        return this.listeners.splice(this.indexOf(listener, scope), 1);
+    Signal.prototype.remove = function(listener, context) {
+      if (this.registered(listener, context)) {
+        return this.listeners.splice(this.indexOf(listener, context), 1);
       }
     };
     Signal.prototype.removeAll = function() {
       return this.listeners = [];
     };
-    Signal.prototype.indexOf = function(listener, scope) {
-      var index, _len, _listener, _ref, _ref2, _scope;
+    Signal.prototype.indexOf = function(listener, context) {
+      var index, _context, _len, _listener, _ref, _ref2;
       _ref = this.listeners;
       for (index = 0, _len = _ref.length; index < _len; index++) {
-        _ref2 = _ref[index], _listener = _ref2[0], _scope = _ref2[1];
-        if (listener === _listener && scope === _scope) {
+        _ref2 = _ref[index], _listener = _ref2[0], _context = _ref2[1];
+        if (listener === _listener && context === _context) {
           return index;
         }
       }
       return -1;
     };
-    Signal.prototype.registered = function(listener, scope) {
-      return this.indexOf(listener, scope) !== -1;
+    Signal.prototype.registered = function(listener, context) {
+      return this.indexOf(listener, context) !== -1;
     };
     Signal.prototype.sortListeners = function() {
       return this.listeners.sort(function(a, b) {
@@ -70,13 +70,13 @@
       });
     };
     Signal.prototype.dispatch = function() {
-      var listener, listeners, once, priority, scope, _i, _len, _ref, _results;
+      var context, listener, listeners, once, priority, _i, _len, _ref, _results;
       listeners = this.listeners.concat();
       _results = [];
       for (_i = 0, _len = listeners.length; _i < _len; _i++) {
-        _ref = listeners[_i], listener = _ref[0], scope = _ref[1], once = _ref[2], priority = _ref[3];
-        listener.apply(scope, arguments);
-        _results.push(once ? this.remove(listener, scope) : void 0);
+        _ref = listeners[_i], listener = _ref[0], context = _ref[1], once = _ref[2], priority = _ref[3];
+        listener.apply(context, arguments);
+        _results.push(once ? this.remove(listener, context) : void 0);
       }
       return _results;
     };
@@ -95,20 +95,20 @@
       Impulse.__super__.constructor.call(this);
       this.running = false;
     }
-    Impulse.prototype.add = function(listener, scope, priority) {
+    Impulse.prototype.add = function(listener, context, priority) {
       if (priority == null) {
         priority = 0;
       }
-      Impulse.__super__.add.call(this, listener, scope, priority);
+      Impulse.__super__.add.call(this, listener, context, priority);
       if (this.hasListeners() && !this.running) {
         return this.start();
       }
     };
-    Impulse.prototype.remove = function(listener, scope, priority) {
+    Impulse.prototype.remove = function(listener, context, priority) {
       if (priority == null) {
         priority = 0;
       }
-      Impulse.__super__.remove.call(this, listener, scope, priority);
+      Impulse.__super__.remove.call(this, listener, context, priority);
       if (this.running && !this.hasListeners()) {
         return this.stop();
       }

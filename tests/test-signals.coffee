@@ -37,41 +37,41 @@ test "Listeners can be removed from signal", ->
 
 	assertThat signal.listeners, arrayWithLength 0
 
-test "Listeners can be registered with a scope", ->
+test "Listeners can be registered with a context", ->
 	signal = new Signal
-	scope = {}
+	context = {}
 	listenerScope = null
 	listener = ->
 		listenerScope = this
 	
-	signal.add listener, scope
+	signal.add listener, context
 	signal.dispatch "hello"
 
-	assertThat listenerScope, equalTo scope
+	assertThat listenerScope, equalTo context
 
-test "The same listener can be registered twice with two different scope", ->
+test "The same listener can be registered twice with two different context", ->
 	signal = new Signal
-	scope1 = {}
-	scope2 = {}
+	context1 = {}
+	context2 = {}
 	listener = ->
 	
-	signal.add listener, scope1
-	signal.add listener, scope2
+	signal.add listener, context1
+	signal.add listener, context2
 
 	assertThat signal.listeners, arrayWithLength 2
 
-test "Even a listener with a scope can be removed", ->
+test "Even a listener with a context can be removed", ->
 	signal = new Signal
-	scope1 = foo:"Foo"
-	scope2 = foo:"Bar"
+	context1 = foo:"Foo"
+	context2 = foo:"Bar"
 	lastCall = null
 	listener = ->
 		lastCall = this.foo
 	
-	signal.add listener, scope1
-	signal.add listener, scope2
+	signal.add listener, context1
+	signal.add listener, context2
 
-	signal.remove listener, scope1
+	signal.remove listener, context1
 
 	signal.dispatch()
 

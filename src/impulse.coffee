@@ -35,16 +35,16 @@ class Impulse extends Signal
 	#### Listeners management
 
 	# Impulse listeners are registered as any other signal listeners.
-	add:( listener, scope, priority=0 )->
-		super listener, scope, priority
+	add:( listener, context, priority=0 )->
+		super listener, context, priority
 
 		# By convention, the `Impulse` signal start running when the
 		# first listener is added.
 		if @hasListeners() and not @running then @start()
 	
 	# Impulse listeners are unregistered as any other signal listeners.
-	remove:( listener, scope, priority=0 )->
-		super listener, scope, priority
+	remove:( listener, context, priority=0 )->
+		super listener, context, priority
 
 		# The `Impulse` object automatically stop itself when it doesn't
 		# have a listener anymore.

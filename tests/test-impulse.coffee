@@ -38,41 +38,41 @@ test "Listeners can be removed from impulse", ->
 
 	assertThat impulse.listeners, arrayWithLength 0
 
-test "Listeners can be registered with a scope", ->
+test "Listeners can be registered with a context", ->
 	impulse = new Impulse
-	scope = {}
+	context = {}
 	listenerScope = null
 	listener = ->
 		listenerScope = this
 	
-	impulse.add listener, scope
+	impulse.add listener, context
 	impulse.dispatch "hello"
 
-	assertThat listenerScope, equalTo scope
+	assertThat listenerScope, equalTo context
 
-test "The same listener can be registered twice with two different scope", ->
+test "The same listener can be registered twice with two different context", ->
 	impulse = new Impulse
-	scope1 = {}
-	scope2 = {}
+	context1 = {}
+	context2 = {}
 	listener = ->
 	
-	impulse.add listener, scope1
-	impulse.add listener, scope2
+	impulse.add listener, context1
+	impulse.add listener, context2
 
 	assertThat impulse.listeners, arrayWithLength 2
 
-test "Even a listener with a scope can be removed", ->
+test "Even a listener with a context can be removed", ->
 	impulse = new Impulse
-	scope1 = foo:"Foo"
-	scope2 = foo:"Bar"
+	context1 = foo:"Foo"
+	context2 = foo:"Bar"
 	lastCall = null
 	listener = ->
 		lastCall = this.foo
 	
-	impulse.add listener, scope1
-	impulse.add listener, scope2
+	impulse.add listener, context1
+	impulse.add listener, context2
 
-	impulse.remove listener, scope1
+	impulse.remove listener, context1
 
 	impulse.dispatch()
 

@@ -15,31 +15,33 @@ class Signal
 	#
 	# Listeners are stored internally as an array with the form:
 	#
-	#     [ listener, scope, calledOnce, priority ]
+	#     [ listener, context, calledOnce, priority ]
 
-	# You can register a listener with or without a scope.
+	# You can register a listener with or without a context.
+	# The context is the object that can be accessed through `this`
+	# inside the listener function body.
 	# 
-	# An optional `priority` arguments allow you to force
-	# an order of dispatch for a listener.
-	add:( listener, scope, priority = 0 )->
+	# An optional `priority` argument allow you to force
+	# an order of dispatch for a listener. 
+	add:( listener, context, priority = 0 )->
 
 		# A listener can be registered several times, but only
-		# if the scope object is different each time.
+		# if the context object is different each time.
 		#
 		# In other words, the following is possible:
 		#
 		#     listener = ->
-		#     scope = {}
+		#     context = {}
 		#     myObject.signal.add listener
-  		#     myObject.signal.add listener, scope
+  		#     myObject.signal.add listener, context
 		#
 		# When the following is not:
 		#
 		#     listener = ->
 		#     myObject.signal.add listener
   		#     myObject.signal.add listener
-		if not @registered listener, scope 
-			@listeners.push [ listener, scope, false, priority ]
+		if not @registered listener, context 
+			@listeners.push [ listener, context, false, priority ]
 
 			# Listeners are sorted according to their order each time
 			# a new listener is added.
@@ -49,39 +51,39 @@ class Signal
 	# Listeners can be registered for only one call.
 	#
 	# All the others rules are the same. So you can't add
-	# the same listener/scope couple twice through the two methods.
-	addOnce:( listener, scope, priority = 0 )->
-		if not @registered listener, scope 
-			@listeners.push [ listener, scope, true, priority ]
+	# the same listener/context couple twice through the two methods.
+	addOnce:( listener, context, priority = 0 )->
+		if not @registered listener, context 
+			@listeners.push [ listener, context, true, priority ]
 			if @listeners.length > 1
 				@sortListeners()
 	
-	# Listeners can be removed, but only with the scope with which
+	# Listeners can be removed, but only with the context with which
 	# they was added to the signal.
 	#
-	# In this regards, avoid to register listeners without a scope.
-	# If later in the application a scope is forgotten or invalid 
+	# In this regards, avoid to register listeners without a context.
+	# If later in the application a context is forgotten or invalid 
 	# when removing a listener from this signal, the listener 
-	# without scope will end up being removed.
-	remove:( listener, scope )->
-		if @registered listener, scope
-			@listeners.splice @indexOf( listener, scope ), 1
+	# without context will end up being removed.
+	remove:( listener, context )->
+		if @registered listener, context
+			@listeners.splice @indexOf( listener, context ), 1
 	
 	# All listeners can be removed at once if needed.
 	removeAll:->
 		@listeners = []
 	
-	# `indexOf` returns the position of the listener/scope couple
+	# `indexOf` returns the position of the listener/context couple
 	# in the listeners array.
-	indexOf:( listener, scope )->
-		for [ _listener, _scope ], index in @listeners
-			if listener is _listener and scope is _scope then return index
+	indexOf:( listener, context )->
+		for [ _listener, _context ], index in @listeners
+			if listener is _listener and context is _context then return index
 		-1
 
-	# Use the `registered` method to test whether a listener/scope couple
+	# Use the `registered` method to test whether a listener/context couple
 	# have been registered in this signal.
-	registered:( listener, scope )->
-		@indexOf( listener, scope ) isnt -1
+	registered:( listener, context )->
+		@indexOf( listener, context ) isnt -1
 	
 	# The listeners are sorted according to their `priority`.
 	# The higher the priority the lower the listener will be
@@ -101,9 +103,9 @@ class Signal
 	# the call.
 	dispatch:->
 		listeners = @listeners.concat()
-		for [ listener, scope, once, priority ] in listeners
-			listener.apply scope, arguments	
-			if once then @remove listener, scope 
+		for [ listener, context, once, priority ] in listeners
+			listener.apply context, arguments	
+			if once then @remove listener, context 
 	
 # Address the access restriction due to the sandboxing when used
 # directly in a browser with the `text/coffeescript` mode. 
