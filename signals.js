@@ -13,7 +13,7 @@
       if (priority == null) priority = 0;
       if (!this.registered(listener, context)) {
         this.listeners.push([listener, context, false, priority]);
-        if (this.listeners.length > 1) return this.sortListeners();
+        return this.sortListeners();
       }
     };
 
@@ -21,7 +21,7 @@
       if (priority == null) priority = 0;
       if (!this.registered(listener, context)) {
         this.listeners.push([listener, context, true, priority]);
-        if (this.listeners.length > 1) return this.sortListeners();
+        return this.sortListeners();
       }
     };
 
@@ -36,11 +36,11 @@
     };
 
     Signal.prototype.indexOf = function(listener, context) {
-      var index, _context, _len, _listener, _ref, _ref2;
+      var c, i, l, _len, _ref, _ref2;
       _ref = this.listeners;
-      for (index = 0, _len = _ref.length; index < _len; index++) {
-        _ref2 = _ref[index], _listener = _ref2[0], _context = _ref2[1];
-        if (listener === _listener && context === _context) return index;
+      for (i = 0, _len = _ref.length; i < _len; i++) {
+        _ref2 = _ref[i], l = _ref2[0], c = _ref2[1];
+        if (listener === l && context === c) return i;
       }
       return -1;
     };
@@ -50,6 +50,7 @@
     };
 
     Signal.prototype.sortListeners = function() {
+      if (this.listeners.length <= 1) return;
       return this.listeners.sort(function(a, b) {
         var pA, pB, _ref;
         _ref = [a[3], b[3]], pA = _ref[0], pB = _ref[1];
@@ -83,7 +84,7 @@
 
   })();
 
-  if (typeof window !== "undefined" && window !== null) window.Signal = Signal;
+  this.Signal = Signal;
 
   requestAnimFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function() {
     return window.setTimeout(callback, 1000 / 60);
@@ -143,13 +144,13 @@
     };
 
     Impulse.prototype.getTime = function() {
-      return (new Date).getTime();
+      return new Date().getTime();
     };
 
     return Impulse;
 
   })(Signal);
 
-  if (typeof window !== "undefined" && window !== null) window.Impulse = Impulse;
+  this.Impulse = Impulse;
 
 }).call(this);
